@@ -1,0 +1,26 @@
+apiVersion: skaffold/v2beta29
+kind: Config
+build:
+  local:
+    push: true
+    useDockerCLI: true
+    useBuildkit: true
+  artifacts:
+    - image: docker.io/primeroz/aws-test-downloader
+      docker: {}
+deploy:
+  helm:
+    releases:
+      - name: local
+        chartPath: ./charts/downloader
+        namespace: aws-test-downloader
+        valuesFiles:
+          - charts/downloader/values.yaml
+          - charts/downloader/values.secrets.yaml
+        setValues: 
+          debug: true
+        artifactOverrides:
+          imageKey: docker.io/primeroz/aws-test-downloader
+          image: docker.io/primeroz/aws-test-downloader
+        imageStrategy:
+          fqn: {}
